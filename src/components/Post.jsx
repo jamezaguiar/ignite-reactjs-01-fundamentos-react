@@ -23,6 +23,11 @@ export function Post({ author, publishedAt, content }) {
     addSuffix: true,
   });
 
+  function handleChangeNewCommentText(e) {
+    e.target.setCustomValidity('');
+    setNewCommentText(e.target.value);
+  }
+
   function handleCreateNewComment(e) {
     e.preventDefault();
     setComments(prevComments => [...prevComments, newCommentText]);
@@ -34,6 +39,12 @@ export function Post({ author, publishedAt, content }) {
       prevComments.filter(comment => comment !== commentToDelete)
     );
   }
+
+  function handleNewCommentInvalid(e) {
+    e.target.setCustomValidity('Esse campo é obrigatório!');
+  }
+
+  const isNewCommentTextEmpty = newCommentText.length === 0;
 
   return (
     <article className={styles.post}>
@@ -77,11 +88,15 @@ export function Post({ author, publishedAt, content }) {
         <textarea
           placeholder="Deixe um comentário"
           value={newCommentText}
-          onChange={e => setNewCommentText(e.target.value)}
+          onChange={handleChangeNewCommentText}
+          onInvalid={handleNewCommentInvalid}
+          required
         />
 
         <footer>
-          <button type="submit">Publicar</button>
+          <button type="submit" disabled={isNewCommentTextEmpty}>
+            Publicar
+          </button>
         </footer>
       </form>
 
